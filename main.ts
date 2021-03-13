@@ -52,14 +52,6 @@ export default class ObsidianGit extends Plugin {
         let branchInfo = await git.branch();
         this.settings.currentBranch = branchInfo.current;
 
-        let remote = await git.remote([]);
-        if (typeof remote === "string") {
-            this.settings.remote = remote.trim();
-        } else {
-            this.displayMessage("Failed to detect remote.", 0);
-            return;
-        }
-
         if (this.settings.autoPullOnBoot) {
             await this.pull().then((filesUpdated) => {
                 this.setState(PluginState.idle);
@@ -278,7 +270,7 @@ class ObsidianGitSettings {
     disablePush: boolean = true;
     disablePopups: boolean = false;
     currentBranch: string;
-    remote: string;
+    remote: string = "origin";
 }
 
 class ObsidianGitSettingsTab extends PluginSettingTab {
@@ -325,7 +317,7 @@ class ObsidianGitSettingsTab extends PluginSettingTab {
             .setName("Commit message")
             .setDesc(
                 "Specify custom commit message. Available placeholders: {{date}}" +
-                    " (see below) and {{numFiles}} (number of changed files in the commit)"
+                " (see below) and {{numFiles}} (number of changed files in the commit)"
             )
             .addText((text) =>
                 text
@@ -391,6 +383,19 @@ class ObsidianGitSettingsTab extends PluginSettingTab {
                     );
                 });
             });
+
+        new Setting(containerEl)
+            .setName("Remote")
+            .setDesc("Git remote for push")
+            .addText((text) =>
+                text
+                    .setPlaceholder(plugin.settings.remote)
+                    .setValue(plugin.settings.remote)
+                    .onChange(async (value) => {
+                        plugin.settings.remote = value;
+                        await plugin.saveData(plugin.settings);
+                    })
+            );
 
         new Setting(containerEl)
             .setName("Pull updates on startup")
