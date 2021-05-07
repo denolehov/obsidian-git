@@ -1,21 +1,18 @@
 # Obsidian Git
 Simple plugin that allows you to backup your [Obsidian.md](https://obsidian.md) vault to a remote git repository (e.g. private repo on GitHub).
-This plugin assumes you have existing git repository initialized locally and credentials are setup.
+This plugin assumes credentials are set up.
 
-On advantages of backing up your vault with git I suggest reading this [amazing article](https://medium.com/analytics-vidhya/how-i-put-my-mind-under-version-control-24caea37b8a5) by [@tallguyjenks](https://github.com/tallguyjenks). You can find a "how-to" on git repository setup there as well, this plugin does not expose an interface to initialize git repository (yet).
-
-Synergises well with [GitJournal](https://github.com/GitJournal/GitJournal) mobile markdown note taking app.
+On advantages of backing up your vault with git I suggest reading this [amazing article](https://medium.com/analytics-vidhya/how-i-put-my-mind-under-version-control-24caea37b8a5) by [@tallguyjenks](https://github.com/tallguyjenks).
 
 ## How to use
 
+For mobile use please refer to the [obsidian-git-mobile](https://github.com/Vinzent03/obsidian-git-mobile) plugin. It's the same plugin, just with some tweaks to fix node APIs imports.
+
 ### Requirements
-- initialized git repository
 - credentials are set up
 - remote repository
-- upstream/tracking branch (run `git push`. Git should prompt you a command)
-- at least one pushed commit
 
-[How to create a local repo and push it to GitHub](https://docs.github.com/en/github/importing-your-projects-to-github/adding-an-existing-project-to-github-using-the-command-line)
+[How to create a repo on GitHub](https://docs.github.com/en/github/getting-started-with-github/create-a-repo)
 
 ### Features
 
@@ -74,6 +71,18 @@ $ flatpak run md.obsidian.Obsidian
 ```
 https://github.com/flathub/md.obsidian.Obsidian/issues/5#issuecomment-736974662
 
+## Standalone mode
+
+I am using [isomorphic-git](https://isomorphic-git.org/), which is a re-implementation of git in JavaScript, because you cannot use native git on Android or iOS. This brings some problems with it though.
+- Merging with conflicts is not supported ([isomorphic-git issue](https://github.com/isomorphic-git/isomorphic-git/issues/325))
+- SSH authentication is not supported ([isomorphic-git issue](https://github.com/isomorphic-git/isomorphic-git/issues/231)
+- Instead of using native modules, it uses web APIs, why it's affected by [CORS](https://developer.mozilla.org/de/docs/Web/HTTP/CORS) ([isomorphic-git explanation](https://github.com/isomorphic-git/isomorphic-git#cors-support))
+
+The Obsidian devs implemented a workaround for themselves, but didn't expose it to the API so far. Until they improve and expose it, a CORS [proxy server](https://en.wikipedia.org/wiki/Proxy_server) is needed. 
+
+A proxy provided by [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git#cors-support) itself is https://cors.isomorphic-git.org, but please follow their [Terms of Use](https://cors.isomorphic-git.org)
+
+
 # Tips
 ## Excluding Obsidian cache files from repository
 To exclude cache files from the repository, create `.gitignore` file in the root of your vault and add the following lines:
@@ -89,7 +98,7 @@ To exclude cache files from the repository, create `.gitignore` file in the root
 ```
 ---
 
-If you have any kind of feedback or questions, feel free to reach out via GitHub issues or `@evrwhr` on [Obsidian Discord server](https://discord.com/invite/veuWUTm).
+If you have any kind of feedback or questions, feel free to reach out via GitHub issues or `@evrwhr` or `@Vinadon` on [Obsidian Discord server](https://discord.com/invite/veuWUTm).
 
 This plugin was initial developed by [denolehov](https://github.com/denolehov). Since March, it's mainly [Vinzent03](https://github.com/Vinzent03) who is developing on this plugin.
 
