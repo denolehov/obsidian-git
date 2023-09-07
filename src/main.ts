@@ -138,9 +138,19 @@ export default class ObsidianGit extends Plugin {
         }
     }
 
+    async handleOnlineStatusChange() {
+        if (!this.offlineMode) return;
+
+        if (navigator.onLine) {
+            this.offlineMode = false;
+            this.promiseQueue.addTask(() => this.pullChangesFromRemote());
+        }
+    }
+
     async loadPlugin() {
         addEventListener("git-refresh", this.refresh.bind(this));
         addEventListener("git-head-update", this.refreshUpdatedHead.bind(this));
+        addEventListener("online", this.handleOnlineStatusChange.bind(this));
 
         this.registerView(SOURCE_CONTROL_VIEW_CONFIG.type, (leaf) => {
             return new GitView(leaf, this);
@@ -742,6 +752,7 @@ export default class ObsidianGit extends Plugin {
 
     hasConnectivity() {
         if (navigator.onLine) return true;
+        this.offlineMode = true;
         return (new Notice('No Connectivity'), false)
     }
 
