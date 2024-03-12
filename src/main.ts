@@ -138,9 +138,19 @@ export default class ObsidianGit extends Plugin {
         }
     }
 
+    async handleOnlineStatusChange() {
+        if (!this.offlineMode) return;
+
+        if (navigator.onLine) {
+            this.offlineMode = false;
+            this.promiseQueue.addTask(() => this.pullChangesFromRemote());
+        }
+    }
+
     async loadPlugin() {
         addEventListener("git-refresh", this.refresh.bind(this));
         addEventListener("git-head-update", this.refreshUpdatedHead.bind(this));
+        addEventListener("online", this.handleOnlineStatusChange.bind(this));
 
         this.registerView(SOURCE_CONTROL_VIEW_CONFIG.type, (leaf) => {
             return new GitView(leaf, this);
@@ -763,6 +773,12 @@ export default class ObsidianGit extends Plugin {
         return Platform.isDesktopApp;
     }
 
+    hasConnectivity() {
+        if (navigator.onLine) return true;
+        this.offlineMode = true;
+        return (new Notice('No Connectivity'), false)
+    }
+
     async init(): Promise<void> {
         this.showNotices();
 
@@ -949,6 +965,7 @@ export default class ObsidianGit extends Plugin {
     ///Used for command
     async pullChangesFromRemote(): Promise<void> {
         if (!(await this.isAllInitialized())) return;
+        if (!(this.hasConnectivity())) return;
 
         const filesUpdated = await this.pull();
         this.setUpAutoBackup();
@@ -982,10 +999,13 @@ export default class ObsidianGit extends Plugin {
     ): Promise<void> {
         if (!(await this.isAllInitialized())) return;
 
+        const isConnected = this.hasConnectivity();
+
         if (
             this.settings.syncMethod == "reset" &&
             this.settings.pullBeforePush
         ) {
+            if (!isConnected) return;
             await this.pull();
         }
 
@@ -1001,6 +1021,7 @@ export default class ObsidianGit extends Plugin {
         if (!this.settings.disablePush) {
             // Prevent plugin to pull/push at every call of createBackup. Only if unpushed commits are present
             if (await this.gitManager.canPush()) {
+                if (!isConnected) return;
                 if (
                     this.settings.syncMethod != "reset" &&
                     this.settings.pullBeforePush
@@ -1198,9 +1219,9 @@ export default class ObsidianGit extends Plugin {
 
     async push(): Promise<boolean> {
         if (!(await this.isAllInitialized())) return false;
-        if (!(await this.remotesAreSet())) {
-            return false;
-        }
+        if (!(await this.remotesAreSet())) return false;
+        if (!(this.hasConnectivity())) return false;
+
         const hadConflict = this.localStorage.getConflict();
         if (this.gitManager instanceof SimpleGit)
             await this.mayDeleteConflictFile();
