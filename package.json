@@ -50,6 +50,7 @@
         "typescript": "^5.3.3"
     },
     "dependencies": {
+        "axios": "^1.6.5",
         "buffer": "^6.0.3",
         "css-color-converter": "^2.0.0",
         "debug": "^4.3.4",

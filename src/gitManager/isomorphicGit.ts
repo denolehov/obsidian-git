@@ -26,6 +26,7 @@ import { GeneralModal } from "../ui/modals/generalModal";
 import { splitRemoteBranch, worthWalking } from "../utils";
 import { GitManager } from "./gitManager";
 import { MyAdapter } from "./myAdapter";
+import axios from "axios";
 
 export class IsomorphicGit extends GitManager {
     private readonly FILE = 0;
@@ -197,6 +198,21 @@ export class IsomorphicGit extends GitManager {
             this.plugin.displayError(error);
             throw error;
         }
+    }
+    async getAICommitSummary(): Promise<string>{
+        const commitFiles = await this.getStagedFiles(".");  // TODO: get proper paths
+        let prompt_string = ""; // TODO: get this from the settings
+        prompt_string += "Commit message: " + commitFiles.join('\n');
+        const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', { // TODO: get endpoint from settings
+            prompt: prompt_string,
+            max_tokens: 60, // TODO: get this from the settings
+        }, {
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, // TODO: get this from the settings
+            },
+        });
+
+        return response.data.choices[0].text.trim(); // Return the generated summary
     }
 
     async commit({

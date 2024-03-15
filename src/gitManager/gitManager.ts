@@ -129,7 +129,7 @@ export abstract class GitManager {
         }
         return path;
     }
-
+    abstract getAICommitSummary(): Promise<string>
     private _getTreeStructure<T = DiffFile | FileStatusResult>(
         children: (T & { path: string })[],
         beginLength = 0
@@ -245,6 +245,10 @@ export abstract class GitManager {
         if (template.includes("{{hostname}}")) {
             const hostname = this.plugin.localStorage.getHostname() || "";
             template = template.replace("{{hostname}}", hostname);
+        }
+        if (template.includes("{{ai_summary}}")) {
+            const ai_summary = await this.getAICommitSummary() || "";
+            template = template.replace("{{ai_summary}}", ai_summary);
         }
 
         if (template.includes("{{files}}")) {
