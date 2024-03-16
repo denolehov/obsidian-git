@@ -488,8 +488,16 @@ export class IsomorphicGit extends GitManager {
             const status = await this.branchInfo();
             const trackingBranch = status.tracking;
             const currentBranch = status.current;
+
+            if (trackingBranch == null || currentBranch == null) {
+                return 0;
+            }
+
+            const localCommit = await this.resolveRef(currentBranch);
+            const upstreamCommit = await this.resolveRef(trackingBranch);
+
             const numChangedFiles = (
-                await this.getFileChangesCount(currentBranch!, trackingBranch!)
+                await this.getFileChangesCount(localCommit, upstreamCommit)
             ).length;
 
             this.plugin.setState(PluginState.push);
