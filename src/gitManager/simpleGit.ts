@@ -2,7 +2,7 @@ import { spawnSync } from "child_process";
 import debug from "debug";
 import { FileSystemAdapter, normalizePath, Notice } from "obsidian";
 import * as path from "path";
-import { sep } from "path";
+import { sep, resolve } from "path";
 import simpleGit, * as simple from "simple-git";
 import { GIT_LINE_AUTHORING_MOVEMENT_DETECTION_MINIMAL_LENGTH } from "src/constants";
 import { LineAuthorFollowMovement } from "src/lineAuthor/model";
@@ -65,7 +65,11 @@ export class SimpleGit extends GitManager {
 
             debug.enable("simple-git");
             if (await this.git.checkIsRepo()) {
-                await this.git.cwd(await this.git.revparse("--show-toplevel"));
+                // Resolve the relative root reported by git into an absolute path
+                // in case git resides in a different filesystem (eg, WSL)
+                const relativeRoot = await this.git.revparse("--show-cdup");
+                const absoluteRoot = resolve(basePath + sep + relativeRoot);
+                await this.git.cwd(absoluteRoot);
             }
         }
     }
