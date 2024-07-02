@@ -1,9 +1,6 @@
 import { HoverParent, HoverPopover, ItemView, WorkspaceLeaf } from "obsidian";
 import { SOURCE_CONTROL_VIEW_CONFIG } from "src/constants";
 import ObsidianGit from "src/main";
-// @tsconfig/svelte is required to resolve this error.
-// Ignore temporarily.
-// @ts-ignore
 import SourceControlViewComponent from "./sourceControl.svelte";
 
 export default class GitView extends ItemView implements HoverParent {

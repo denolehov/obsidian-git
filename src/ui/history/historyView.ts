@@ -1,9 +1,6 @@
 import { HoverParent, HoverPopover, ItemView, WorkspaceLeaf } from "obsidian";
 import { HISTORY_VIEW_CONFIG } from "src/constants";
 import ObsidianGit from "src/main";
-// @tsconfig/svelte is required to resolve this error.
-// Ignore temporarily.
-// @ts-ignore
 import HistoryViewComponent from "./historyView.svelte";
 
 export default class HistoryView extends ItemView implements HoverParent {

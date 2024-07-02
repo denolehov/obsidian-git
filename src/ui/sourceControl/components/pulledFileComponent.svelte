@@ -1,4 +1,3 @@
-<!-- @ts-ignore -->
 <script lang="ts">
     import { TFile } from "obsidian";
     import { hoverPreview } from "obsidian-community-lib";
