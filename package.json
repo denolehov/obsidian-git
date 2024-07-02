@@ -11,7 +11,8 @@
         "format": "prettier --check src",
         "tsc": "tsc --noEmit",
         "svelte": "svelte-check",
-        "all": "pnpm run tsc && pnpm run svelte && pnpm run format && pnpm run lint"
+        "all": "pnpm run tsc && pnpm run svelte && pnpm run format && pnpm run lint",
+        "test": "vitest"
     },
     "keywords": [],
     "author": "",
@@ -47,7 +48,8 @@
         "svelte-check": "^3.8.2",
         "svelte-preprocess": "^5.1.4",
         "tslib": "^2.6.3",
-        "typescript": "^5.5.2"
+        "typescript": "^5.5.2",
+        "vitest": "^1.6.0"
     },
     "dependencies": {
         "buffer": "^6.0.3",
