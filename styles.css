@@ -90,10 +90,10 @@
 }
 
 .git-tools .type[data-type="M"] {
-    color: orange;
+    color: var(--git-modified);
 }
 .git-tools .type[data-type="D"] {
-    color: red;
+    color: var(--git-deleted);
 }
 .git-tools .buttons {
     display: flex;
@@ -170,6 +170,16 @@ which itself is adapted from the diff2html library with the following original l
     --git-insert: #399839;
     --git-change: #d0b44c;
     --git-move: #3572b0;
+
+    --git-diff-delete-text-bg: #ee443330;
+    --git-diff-insert-text-bg: #22bb2230;
+
+    --git-modified: var(--color-orange);
+    --git-deleted: var(--color-red);
+
+    --git-gutter-marker-size: 0.2rem;
+    --git-gutter-marker-size-hover: 0.6rem;
+    --git-gutter-marker-radius: 0;
 }
 
 .git-diff {
@@ -572,12 +582,12 @@ which itself is adapted from the diff2html library with the following original l
 
 .git-unified-diff-view,
 .git-split-diff-view .cm-deletedLine .cm-changedText {
-    background-color: #ee443330;
+    background-color: var(--git-diff-delete-text-bg);
 }
 
 .git-unified-diff-view,
 .git-split-diff-view .cm-insertedLine .cm-changedText {
-    background-color: #22bb2230;
+    background-color: var(--git-diff-insert-text-bg);
 }
 
 .git-obscure-prompt[git-is-obscured="true"] #git-show-password:after {
@@ -612,22 +622,22 @@ which itself is adapted from the diff2html library with the following original l
     }
 }
 
-.git-gutter-marker:hover {
-    border-radius: 2px;
+.git-gutter-marker {
+    border-radius: var(--git-gutter-marker-radius);
 }
 
 .git-gutter-marker.git-add {
     background-color: var(--color-green);
     justify-self: center;
     height: inherit;
-    width: 0.2rem;
+    width: var(--git-gutter-marker-size);
 }
 
 .git-gutter-marker.git-change {
     background-color: var(--color-yellow);
     justify-self: center;
     height: inherit;
-    width: 0.2rem;
+    width: var(--git-gutter-marker-size);
 }
 
 .git-gutter-marker.git-changedelete {
@@ -640,32 +650,32 @@ which itself is adapted from the diff2html library with the following original l
 
 .git-gutter-marker.git-delete {
     background-color: var(--color-red);
-    height: 0.2rem;
+    height: var(--git-gutter-marker-size);
     width: 0.8rem;
     align-self: end;
 }
 
 .git-gutter-marker.git-topdelete {
     background-color: var(--color-red);
-    height: 0.2rem;
+    height: var(--git-gutter-marker-size);
     width: 0.8rem;
     align-self: start;
 }
 
 div:hover > .git-gutter-marker.git-change {
-    width: 0.6rem;
+    width: var(--git-gutter-marker-size-hover);
 }
 
 div:hover > .git-gutter-marker.git-add {
-    width: 0.6rem;
+    width: var(--git-gutter-marker-size-hover);
 }
 
 div:hover > .git-gutter-marker.git-delete {
-    height: 0.6rem;
+    height: var(--git-gutter-marker-size-hover);
 }
 
 div:hover > .git-gutter-marker.git-topdelete {
-    height: 0.6rem;
+    height: var(--git-gutter-marker-size-hover);
 }
 
 div:hover > .git-gutter-marker.git-changedelete {
