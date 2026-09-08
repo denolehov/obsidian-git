@@ -52,7 +52,7 @@
         "vitest": "^4.1.10"
     },
     "dependencies": {
-        "@codemirror/commands": "^6.10.3",
+        "@codemirror/commands": "^6.10.4",
         "@codemirror/merge": "^6.12.2",
         "@codemirror/search": "^6.7.1",
         "@codemirror/state": "^6.7.1",
