@@ -48,8 +48,8 @@ importers:
         specifier: 1.40.0
         version: 1.40.0
       js-sha256:
-        specifier: ^0.12.0
-        version: 0.12.0
+        specifier: ^1.0.0
+        version: 1.0.0
       simple-git:
         specifier: ^3.36.0
         version: 3.36.0(supports-color@7.2.0)
@@ -1507,8 +1507,8 @@ packages:
     resolution: {integrity: sha512-HGYWWS/ehqTV3xN10i23tkPkpH46MLCIMFNCaaKNavAXTF1RkqxawEPtnjnGZ6XKSInBKkiOA5BKS+aZiY3AvA==}
     engines: {node: '>=8'}
 
-  js-sha256@0.12.0:
-    resolution: {integrity: sha512-P2IyTRMIHCkLD9clcQST8wGP/wqOXjvDD7E3onloE/5LSQGscyrmk2Loa069YsdtLfQWN1EnMDiaomAs9AfP4w==}
+  js-sha256@1.0.0:
+    resolution: {integrity: sha512-Bqxf6ENUzYIMzuELCmRNrJOVbjKH1oMgbfYJBKVr/W1Xf9fazpahqCbb24v1pR7XV1isuqhM+w9KWpK7zCyUQw==}
 
   js-tokens@10.0.0:
     resolution: {integrity: sha512-lM/UBzQmfJRo9ABXbPWemivdCW8V2G8FHaHdypQaIy523snUjog0W71ayWXTjiR+ixeMyVHN2XcpnTd/liPg/Q==}
@@ -3860,7 +3860,7 @@ snapshots:
       html-escaper: 2.0.2
       istanbul-lib-report: 3.0.1
 
-  js-sha256@0.12.0: {}
+  js-sha256@1.0.0: {}
 
   js-tokens@10.0.0: {}
 
