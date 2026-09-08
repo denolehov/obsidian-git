@@ -32,7 +32,7 @@
         "@types/debug": "^4.1.13",
         "@types/diff3": "^0.0.2",
         "@types/node": "^26.1.1",
-        "@typescript-eslint/parser": "8.65.0",
+        "@typescript-eslint/parser": "8.67.0",
         "@vitest/coverage-v8": "^4.1.10",
         "esbuild": "^0.28.1",
         "esbuild-svelte": "^0.9.5",
