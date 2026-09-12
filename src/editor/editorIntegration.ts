@@ -1,6 +1,7 @@
 import type ObsidianGit from "src/main";
 import { LineAuthoringFeature } from "./lineAuthor/lineAuthorIntegration";
 import { SignsFeature } from "./signs/signsIntegration";
+import { conflictExtensions } from "./conflicts/view";
 import { subscribeNewEditor } from "./control";
 import { eventsPerFilePathSingleton } from "./eventsPerFilepath";
 
@@ -21,6 +22,7 @@ export class EditorIntegration {
     onLoadPlugin() {
         eventsPerFilePathSingleton.init();
         this.plg.registerEditorExtension(subscribeNewEditor);
+        this.plg.registerEditorExtension(conflictExtensions);
         this.lineAuthoringFeature.onLoadPlugin();
         this.signsFeature.onLoadPlugin();
     }

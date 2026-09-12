@@ -71,6 +71,21 @@ export class LocalStorageSettings {
         return this.app.saveLocalStorage(this.prefix + "conflict", `${value}`);
     }
 
+    getConflictFiles(): string[] {
+        return JSON.parse(
+            (this.app.loadLocalStorage(this.prefix + "conflictFiles") as
+                | string
+                | undefined) ?? "[]"
+        ) as string[];
+    }
+
+    setConflictFiles(value: string[]): void {
+        this.app.saveLocalStorage(
+            this.prefix + "conflictFiles",
+            JSON.stringify(value)
+        );
+    }
+
     getLastAutoPull(): string | null {
         return this.app.loadLocalStorage(this.prefix + "lastAutoPull") as
             | string

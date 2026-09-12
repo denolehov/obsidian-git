@@ -104,6 +104,13 @@ export default class ObsidianGit extends Plugin {
         this.cachedStatus = await this.gitManager.status();
         if (this.cachedStatus.conflicted.length > 0) {
             this.localStorage.setConflict(true);
+            const known = this.localStorage.getConflictFiles();
+            const merged = Array.from(
+                new Set([...known, ...this.cachedStatus.conflicted])
+            );
+            if (merged.length !== known.length) {
+                this.localStorage.setConflictFiles(merged);
+            }
             await this.branchBar?.display();
         } else {
             this.localStorage.setConflict(false);
@@ -248,6 +255,21 @@ export default class ObsidianGit extends Plugin {
                 this.onActiveLeafChange(leaf);
             })
         );
+        this.registerEvent(
+            this.app.workspace.on("file-open", (file) => {
+                if (file?.path === CONFLICT_OUTPUT_FILE) {
+                    void this.tools.refreshConflictNote();
+                }
+            })
+        );
+        this.registerEvent(
+            this.app.workspace.on("active-leaf-change", () => {
+                this.maybeRefreshConflictNote();
+            })
+        );
+        this.registerDomEvent(window, "focus", () => {
+            this.maybeRefreshConflictNote();
+        });
         this.registerEvent(
             this.app.vault.on("modify", () => {
                 this.debRefresh();
@@ -1191,6 +1213,7 @@ export default class ObsidianGit extends Plugin {
     }
 
     async mayDeleteConflictFile(): Promise<void> {
+        this.localStorage.setConflictFiles([]);
         const file = this.app.vault.getAbstractFileByPath(CONFLICT_OUTPUT_FILE);
         if (file) {
             this.app.workspace.iterateAllLeaves((leaf) => {
@@ -1417,40 +1440,18 @@ export default class ObsidianGit extends Plugin {
 
     async handleConflict(conflicted?: string[]): Promise<void> {
         this.localStorage.setConflict(true);
-        let lines: string[] | undefined;
-        if (conflicted !== undefined) {
-            lines = [
-                "# Conflicts",
-                "Please resolve them and commit them using the commands `Git: Commit all changes` followed by `Git: Push`",
-                "(This file will automatically be deleted before commit)",
-                "[[#Additional Instructions]] available below file list",
-                "",
-                ...conflicted.map((e) => {
-                    const file = this.app.vault.getAbstractFileByPath(e);
-                    if (file instanceof TFile) {
-                        const link = this.app.metadataCache.fileToLinktext(
-                            file,
-                            "/"
-                        );
-                        return `- [[${link}]]`;
-                    } else {
-                        return `- Not a file: ${e}`;
-                    }
-                }),
-                `
-# Additional Instructions
-I strongly recommend to use "Source mode" for viewing the conflicted files. For simple conflicts, in each file listed above replace every occurrence of the following text blocks with the desired text.
-
-\`\`\`diff
-<<<<<<< HEAD
-    File changes in local repository
-=======
-    File changes in remote repository
->>>>>>> origin/main
-\`\`\``,
-            ];
+        if (conflicted !== undefined && conflicted.length > 0) {
+            const known = this.localStorage.getConflictFiles();
+            this.localStorage.setConflictFiles(
+                Array.from(new Set([...known, ...conflicted]))
+            );
         }
-        await this.tools.writeAndOpenFile(lines?.join("\n"));
+        if (this.localStorage.getConflictFiles().length === 0) {
+            return;
+        }
+        await this.tools.writeAndOpenFile(
+            await this.tools.buildConflictNoteContent()
+        );
     }
 
     async editRemotes(): Promise<string | undefined> {
@@ -1537,6 +1538,12 @@ I strongly recommend to use "Source mode" for viewing the conflicted files. For 
 
         if (remoteName) {
             await this.gitManager.removeRemote(remoteName);
+        }
+    }
+
+    private maybeRefreshConflictNote(): void {
+        if (this.app.workspace.getActiveFile()?.path === CONFLICT_OUTPUT_FILE) {
+            void this.tools.refreshConflictNote();
         }
     }
 
